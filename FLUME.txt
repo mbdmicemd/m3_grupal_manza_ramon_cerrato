@@ -1,0 +1,32 @@
+Agent1.sources = spooldir-source
+Agent1.channels = memory-channel
+Agent1.sinks = hdfs-sink
+
+#Describe/configure Source
+Agent1.sources.spooldir-source.type = spooldir
+Agent1.sources.spooldir-source.spoolDir = /home/acerrato/tweets.grupal
+Agent1.sources.spooldir-source.deserializer.maxLineLength = 100000
+Agent1.sources.spooldir-source.hnadler = org.apache.flume.source.http.JSONHandler
+
+#Describe the sink
+Agent1.sinks.hdfs-sink.type = hdfs
+Agent1.sinks.hdfs-sink.hdfs.path = /user/acerrato/tweets_m3_4
+Agent1.sinks.hdfs-sink.hdfs.writeFormat = Text
+Agent1.sinks.hdfs-sink.hdfs.rollSize = 100000000
+Agent1.sinks.hdfs-sink.hdfs.rollCount = 50000
+Agent1.sinks.hdfs-sink.hdfs.filePrefix = events-
+Agent1.sinks.hdfs-sink.hdfs.fileType = DataStream
+Agent1.sinks.hdfs-sink.hdfs.round = true
+Agent1.sinks.hdfs-sink.hdfs.roundValue = 10
+Agent1.sinks.hdfs-sink.hdfs.roundUnit = minute
+
+
+
+#Use a channel which buffers events in memory
+Agent1.channels.memory-channel.type = memory
+Agent1.channels.memory-channel.capacity = 1000
+Agent1.channels.memory-channel.transactionCapacity = 100
+
+#Bind the source and sink to the channel
+Agent1.sources.spooldir-source.channels = memory-channel
+Agent1.sinks.hdfs-sink.channel = memory-channel
